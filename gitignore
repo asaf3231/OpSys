@@ -1,0 +1,30 @@
+# Binaries
+hello
+*.o
+*.out
+*.exe
+
+# Editor/IDE files
+.vscode/
+.DS_Store
+
+# Dev Container configuration (optional)
+.devcontainer/
+
+# Temporary files
+*~
+*.swp
+*.tmp
+
+# Compiled debug symbols (macOS & Linux)
+*.dSYM/
+core
+
+# PDF files and downloaded assignments
+*.pdf
+
+# Backup/duplicate files
+* (1).*
+
+# Logs
+*.log

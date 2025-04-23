@@ -1,0 +1,9 @@
+{
+  "name": "C Development Container",
+  "image": "ubuntu:24.04",
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "extensions": ["ms-vscode.cpptools"],
+  "postCreateCommand": "apt update && apt install -y build-essential gdb"
+}
