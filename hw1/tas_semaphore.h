@@ -1,17 +1,15 @@
-#ifndef TL_SEMAPHORE_H
-#define TL_SEMAPHORE_H
+#ifndef TAS_SEMAPHORE_H
+#define TAS_SEMAPHORE_H
 
 #include <stdatomic.h>
 
 /*
- * Define the semaphore type for the Ticket Lock implementation.
+ * Define the semaphore type.
  * Write your struct details in this file..
  */
 typedef struct {
-    atomic_int cur_ticket;
-    atomic_int ticket;
-    atomic_int value; 
-
+    atomic_int value;
+    atomic_flag lock;
 } semaphore;
 
 /*
@@ -29,4 +27,4 @@ void semaphore_wait(semaphore* sem);
  */
 void semaphore_signal(semaphore* sem);
 
-#endif // TL_SEMAPHORE_H
+#endif // TAS_SEMAPHORE_H
