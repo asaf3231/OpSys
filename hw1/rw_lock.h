@@ -10,7 +10,7 @@
 typedef struct {
     atomic_int readers;
     atomic_flag writer;
-} rwlock rwlock;
+} rwlock;
 
 /*
  * Initializes the read-write lock.

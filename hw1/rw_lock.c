@@ -8,12 +8,16 @@ void rwlock_init(rwlock* lock) {
 void rwlock_acquire_read(rwlock* lock) {
     while (1)
     {
-        while(atomic_load(&lock -> writer)){
+        while (atomic_flag_test_and_set(&lock->writer)) {
+            
         }
+
+        atomic_flag_clear(&lock->writer);
 
         atomic_fetch_add(&lock->readers, 1);
         
-        if(!atomic_load(&lock -> writer)){
+        if(!atomic_flag_test_and_set(&lock->writer)){
+            atomic_flag_clear(&lock->writer);
             break;
         }
         

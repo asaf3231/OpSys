@@ -5,7 +5,6 @@
 
 /*
  * Define the condition variable type.
- * Write your struct details in this file.
  */
 typedef struct {
     atomic_flag lock;
@@ -14,7 +13,6 @@ typedef struct {
 
 /*
  * Define the ticket lock type, which may be used as the external lock.
- * Write your struct details in this file.
  */
 typedef struct {
     atomic_int cur_ticket;
@@ -41,5 +39,12 @@ void condition_variable_signal(condition_variable* cv);
  * Wakes up all threads waiting on the condition variable 'cv'.
  */
 void condition_variable_broadcast(condition_variable* cv);
+
+/*
+ * Ticket lock function declarations — needed for correct compilation
+ */
+void ticketlock_init(ticket_lock* lock);
+void ticketlock_acquire(ticket_lock* lock);
+void ticketlock_release(ticket_lock* lock);
 
 #endif // COND_VAR_H

@@ -1,10 +1,12 @@
 #include "cond_var.h"
+#include <sched.h>
 
 // Initializes the condition variable: sets the flag to false and waiters to 0
 void condition_variable_init(condition_variable* cv) {
     atomic_flag_clear(&cv->lock);       // Initially, no signal
     atomic_init(&cv->waiters, 0);       // No threads waiting
 }
+
 void ticketlock_init(ticket_lock* lock) {
     atomic_init(&lock->ticket, 0);
     atomic_init(&lock->cur_ticket, 0);
