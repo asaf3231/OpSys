@@ -13,7 +13,7 @@
 #include "cp_pattern.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "cond_var.h"
+#include "../task3/cond_var.h"
 #include <pthread.h>
 #include <sched.h>
 
