@@ -1,14 +1,13 @@
 /*
  * cond_var.c
- *
+ * ----------------
  * Implementation of condition variables and ticket locks for thread synchronization.
  *
  * This file provides a simple condition variable mechanism using atomic flags and counters,
  * as well as a FIFO ticket lock for mutual exclusion. These primitives are designed to be
  * used in multi-threaded environments for safe coordination between threads.
  *
- * Author: [Your Name]
- * Date: [Today's Date]
+ * Author: Noam Hasson, Asaf Ramati
  */
 
 #include "cond_var.h"
@@ -22,8 +21,8 @@ void condition_variable_init(condition_variable* cv) {
 
 // Initializes the ticket lock to its initial state
 void ticketlock_init(ticket_lock* lock) {
-    atomic_init(&lock->ticket, 0);
-    atomic_init(&lock->cur_ticket, 0);
+    atomic_init(&lock->ticket, 0);      // Next ticket to give out
+    atomic_init(&lock->cur_ticket, 0);  // Ticket currently being served
 }
 
 /*

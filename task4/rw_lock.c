@@ -6,8 +6,7 @@
  * This lock allows multiple readers to access a shared resource concurrently, but writers require exclusive access.
  * The implementation ensures fairness and prevents race conditions in a multi-threaded environment.
  *
- * Author: [Your Name]
- * Date: [Today's Date]
+ * Author: Noam Hasson, Asaf Ramat
  */
 
 #include "rw_lock.h"
