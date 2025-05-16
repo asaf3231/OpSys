@@ -1,3 +1,15 @@
+/*
+ * cp_pattern.c
+ *
+ * Implementation of the producer-consumer pattern using ticket locks and condition variables.
+ *
+ * This program creates multiple producer and consumer threads that share a queue.
+ * Producers generate unique random numbers and enqueue them, while consumers dequeue
+ * and process the numbers. Synchronization is achieved using ticket locks and condition variables.
+ *
+ * Author: Noam Hasson, Asaf Ramati
+ */
+
 #include "cp_pattern.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,21 +50,36 @@ pthread_t* cons_threads = NULL;
 int global_num_producers = 0;
 int global_num_consumers = 0;
 
+/*
+ * Producer thread function.
+ *
+ * Each producer generates random numbers, ensuring uniqueness, and enqueues them into the shared queue.
+ * The producer stops when the maximum number of items has been produced.
+ */
 void* producer_thread(void* arg);
-void* consumer_thread(void* arg);
-
 
 /*
- * TODO: Implement start_consumers_producers.
- * This function should:
- *  - Print the configuration (number of consumers, producers, seed).
- *  - Seed the random number generator using srand().
- *  - Create producer and consumer threads.
+ * Consumer thread function.
+ *
+ * Each consumer dequeues numbers from the shared queue and checks if they are divisible by 6.
+ * The consumer stops when the stop flag is set and the queue is empty.
+ */
+void* consumer_thread(void* arg);
+
+/*
+ * Start the producer-consumer process.
+ *
+ * This function initializes synchronization primitives, allocates memory for thread handles,
+ * and creates the specified number of producer and consumer threads.
+ *
+ * Parameters:
+ *  - consumers: Number of consumer threads to create.
+ *  - producers: Number of producer threads to create.
+ *  - seed: Seed for the random number generator.
  */
 void start_consumers_producers(int consumers, int producers, int seed) {
 
     // Print configuration
-    printf("Configuration:\n");
     printf("  Number of Consumers : %d\n", consumers);
     printf("  Number of Producers: %d\n", producers);
     printf("  Seed:      %d\n", seed);
@@ -100,6 +127,12 @@ void start_consumers_producers(int consumers, int producers, int seed) {
     }
 }
 
+/*
+ * Producer thread function.
+ *
+ * Each producer generates random numbers, ensuring uniqueness, and enqueues them into the shared queue.
+ * The producer stops when the maximum number of items has been produced.
+ */
 void* producer_thread(void* arg){
 
     while ((atomic_load(&produced_count) < MAX_NUM)){
@@ -143,6 +176,12 @@ void* producer_thread(void* arg){
     return NULL;
 }   
 
+/*
+ * Consumer thread function.
+ *
+ * Each consumer dequeues numbers from the shared queue and checks if they are divisible by 6.
+ * The consumer stops when the stop flag is set and the queue is empty.
+ */
 void* consumer_thread(void* arg) {
     while (1) {
         ticketlock_acquire(&queue_lock);
@@ -177,17 +216,24 @@ void* consumer_thread(void* arg) {
     }
 }
 
-
 /*
- * TODO: Implement stop_consumers to stop all consumers threads.
+ * Stop all consumer threads.
+ *
+ * This function sets the stop flag and wakes up all waiting consumers.
  */
 void stop_consumers() {
-    // TODO: Stop the consumer thread with the given id.
     atomic_store(&stop_flag, 1);
     condition_variable_broadcast(&is_empty); 
 }
 
-
+/*
+ * Print a message with synchronized access.
+ *
+ * This function ensures that messages are printed without interference from other threads.
+ *
+ * Parameters:
+ *  - msg: The message to print.
+ */
 void print_msg(const char* msg) {
     ticketlock_acquire(&print_lock);
     printf("%s\n", msg);
@@ -195,8 +241,9 @@ void print_msg(const char* msg) {
 }
 
 /*
- * TODO: Implement wait_until_producers_produced_all_numbers 
- * The function should wait until all numbers between 0 and 1,000,000 have been produced.
+ * Wait until all numbers have been produced.
+ *
+ * This function blocks until all numbers between 0 and MAX_NUM have been produced by the producers.
  */
 void wait_until_producers_produced_all_numbers() {
     ticketlock_acquire(&queue_lock);
@@ -207,8 +254,10 @@ void wait_until_producers_produced_all_numbers() {
 }
 
 /*
- * TODO: Implement wait_consumers_queue_empty to wait until queue is empty, 
- * if queue is already empty - return immediately without waiting.
+ * Wait until the queue is empty.
+ *
+ * This function blocks until the queue is empty and all work is done. If the queue is already empty,
+ * it returns immediately.
  */
 void wait_consumers_queue_empty() {
     while (1) {
@@ -226,13 +275,19 @@ void wait_consumers_queue_empty() {
 }
 
 /*
- * TODO: Implement a main function that controls the producer-consumer process
+ * Main function.
+ *
+ * This function parses command-line arguments, starts the producer-consumer process,
+ * waits for threads to finish, and cleans up resources.
+ *
+ * Parameters:
+ *  - argc: Number of command-line arguments.
+ *  - argv: Array of command-line arguments.
+ *
+ * Returns:
+ *  - Exit status code.
  */
 int main(int argc, char* argv[]) {
-    // TODO: Parse arguments.
-    // TODO: Start producer-consumer process.
-    // TODO: Wait for threads to finish and clean up resources.
-
     if (argc != 4) {
         fprintf(stderr, "usage: cp pattern [consumers] [producers] [seed]\n");
         exit(1);

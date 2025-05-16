@@ -1,4 +1,4 @@
-#include "rw_lock.h"
+#include "./rw_lock.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -65,7 +65,10 @@ int main()
             pthread_cancel(threads[i]);  // forcefully terminate
         }
         return 1;
+    } else {
+        printf("NOAMMMMMMM\n");
     }
+   
     for(i = 0; i < NUM_READERS; i++)
     {
         pthread_join(threads[i], NULL);

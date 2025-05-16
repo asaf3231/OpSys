@@ -1,6 +1,6 @@
 #ifndef RW_LOCK_H
 #define RW_LOCK_H
-
+#include "cond_var.h"
 #include <stdatomic.h>
 
 /*
@@ -10,6 +10,8 @@
 typedef struct {
     atomic_int readers;
     atomic_flag writer;
+    condition_variable cv;
+    ticket_lock lock;
 } rwlock;
 
 /*
